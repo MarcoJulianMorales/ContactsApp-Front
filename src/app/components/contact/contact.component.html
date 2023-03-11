@@ -1,4 +1,4 @@
-<div id="TablePrivileges" style="margin-left: 3%; margin-top: 2%; margin-right: 23%;">
+<div id="TableContacts" style="margin-left: 3%; margin-top: 2%; margin-right: 23%;">
     <h2 style="margin-bottom: 2%;">ContactsApp</h2>
     <form [formGroup]="forma">
     <div class="row">
@@ -11,7 +11,7 @@
                 </button>
             </div>
 
-            <div class="col-1 rounded" style="margin-right: 0%; background-color: gray; height: 36px; text-align: center; color: white; width: 170px; font-weight: bold; padding-top: 5px;">
+            <div class="col-1 rounded" style="margin-left: 5%; background-color: gray; height: 36px; text-align: center; color: white; width: 170px; font-weight: bold; padding-top: 5px;">
                 <label>{{criterioBusqueda}}:</label>
             </div>
             
@@ -53,8 +53,12 @@
                     </ul>
                 </div>
             </div>
+            <div class="col-1">
+                <!-- <label for="formFile" class="form-label"></label> -->
+                <input class="custom-file-input" type="file" name="file" id="inputGroupFile" (change)="onFileChange($event)" multiple="true" accept=".csv">
+            </div>
 
-            <div class="col-1" style="margin-left: 22%; margin-bottom: 1%;">
+            <div class="col-1" style="margin-left: 7%; margin-bottom: 1%;">
                 <button (click)="resetModel()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newModal">
                   Nuevo
                 </button>
@@ -75,7 +79,7 @@
         <th>Borrar</th>
       </thead>
       <tbody>
-        <tr *ngFor="let contact of listaContacts">
+        <tr *ngFor="let contact of listaContacts[page-1]">
           <th>{{ contact.id }}</th>
           <th>{{ contact.nombre }}</th>
           <th>{{ contact.direccion }}</th>
@@ -99,6 +103,31 @@
         </tr>
       </tbody>
   </table>
+
+  <div class="row">
+    
+    <div class="col-1" style="margin-left: 40%;">
+      <div class="container">
+        <ul class="pagination">
+          <li (click)="previousPage()" *ngIf="page!=1" class="page-item">
+            <a class="page-link" aria-label="Previous">&laquo;</a>
+          </li>
+          <li *ngIf="page==1" class="page-item disabled">
+            <a class="page-link" aria-label="Previous">&laquo;</a>
+          </li>
+          <li (click)="changePage(page)" *ngFor="let page of pages" class="page-item" >
+            <a class="page-link">{{page}}</a> 
+          </li>
+          <li (click)="nextPage()" *ngIf="page!=listaContacts.length" class="page-item">
+            <a class="page-link" aria-label="Next">&raquo;</a>
+          </li>
+          <li *ngIf="page==listaContacts.length" class="page-item disabled">
+            <a class="page-link" aria-label="Next">&raquo;</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
   <div class="modal fade" id=newModal>
     <div class="modal-dialog modal-dialog-centered modal-md">
@@ -188,3 +217,6 @@
   </div>
 
 </div>
+<script>
+
+</script>

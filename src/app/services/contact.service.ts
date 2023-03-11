@@ -49,4 +49,8 @@ export class ContactService {
   searchByFechaRegistro(fecha:any): Observable<any>{
     return this.http.get(this.AppUrl + 'SearchByFechaRegistro?fecha=' + fecha);
   }
+
+  importCSV(importData:any): Observable<any>{
+    return this.http.post(this.AppUrl + 'ImportCSV' , importData);
+  }
 }
