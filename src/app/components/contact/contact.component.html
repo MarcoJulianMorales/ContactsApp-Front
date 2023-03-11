@@ -1,26 +1,74 @@
 <div id="TablePrivileges" style="margin-left: 3%; margin-top: 2%; margin-right: 23%;">
     <h2 style="margin-bottom: 2%;">ContactsApp</h2>
+    <form [formGroup]="forma">
     <div class="row">
-        <div class="col" style="margin-left: 35%; ">
-            <input style="width: 380px" type="text" class="form-control" id="Buscar" placeholder="Ingrese el valor">
-        </div>
-        <div class="col" style=" margin-bottom: 1%;">
-            <button (click)="resetModel()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newModal">
-                <i class="fas fa-search"></i>
-            </button>
-          </div>
-        <div class="col" style="margin-left: 10%; margin-bottom: 1%;">
-          <button (click)="resetModel()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newModal">
-            Nuevo
-          </button>
-        </div>
+
+        
+            <div class="col-2">
+                <button class="btn btn-secondary" *ngIf="busqueda==true" (click)="getContacts()">
+                    <i class="fa-solid fa-arrow-left"></i> 
+                    Mostrar todo
+                </button>
+            </div>
+
+            <div class="col-1 rounded" style="margin-right: 0%; background-color: gray; height: 36px; text-align: center; color: white; width: 170px; font-weight: bold; padding-top: 5px;">
+                <label>{{criterioBusqueda}}:</label>
+            </div>
+            
+            <div class="col-3" >
+                <input style="width: 370px" type="text" formControlName="campoBusqueda" class="form-control" id="Buscar" placeholder="Ingrese el valor">
+            </div>
+            
+            <div class="col-1" >
+                <button (click)="search()" class="btn btn-primary" >
+                    Buscar <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <div class="col-1">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                        Buscar por
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" (click)="changeCriteria('Id')">Id</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" (click)="changeCriteria('Nombre')">Nombre</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" (click)="changeCriteria('Dirección')">Dirección</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" (click)="changeCriteria('Teléfono')">Teléfono</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" (click)="changeCriteria('CURP')">CURP</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" (click)="changeCriteria('Fecha de Registro')">Fecha de Registro</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-1" style="margin-left: 22%; margin-bottom: 1%;">
+                <button (click)="resetModel()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newModal">
+                  Nuevo
+                </button>
+             </div>
+        
     </div>
+    </form>
+
   <table class="table table-striped table-hover align-middle">
     <thead style = "background-color: darkgrey;">
         <th>Id</th>
         <th>Nombre</th>
-        <th>Direccion</th>
-        <th>Telefono</th>
+        <th>Dirección</th>
+        <th>Teléfono</th>
         <th>Curp</th>
         <th>Fecha Registro</th>
         <th>Editar</th>

@@ -26,4 +26,27 @@ export class ContactService {
     return this.http.delete(this.AppUrl + 'delete?id=' + id);
   }
 
+  searchById(id:any): Observable<any>{
+    return this.http.get(this.AppUrl + 'SearchById?id=' + id);
+  }
+
+  searchByNombre(nombre:any): Observable<any>{
+    return this.http.get(this.AppUrl + 'SearchByNombre?nombre=' + nombre);
+  }
+
+  searchByDireccion(direccion:any): Observable<any>{
+    return this.http.get(this.AppUrl + 'SearchByDireccion?direccion=' + direccion);
+  }
+
+  searchByTelefono(telefono:any): Observable<any>{
+    return this.http.get(this.AppUrl + 'SearchByTelefono?telefono=' + telefono);
+  }
+
+  searchByCURP(curp:any): Observable<any>{
+    return this.http.get(this.AppUrl + 'SearchByCurp?curp=' + curp);
+  }
+
+  searchByFechaRegistro(fecha:any): Observable<any>{
+    return this.http.get(this.AppUrl + 'SearchByFechaRegistro?fecha=' + fecha);
+  }
 }

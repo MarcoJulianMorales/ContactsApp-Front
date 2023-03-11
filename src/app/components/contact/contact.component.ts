@@ -10,7 +10,8 @@ import { ContactService } from 'src/app/services/contact.service';
 export class ContactComponent implements OnInit {
   forma: FormGroup;
   listaContacts: any[] = [];
-
+  busqueda: boolean = false;
+  criterioBusqueda: string= 'Id';
   
   constructor(
     private fb: FormBuilder,
@@ -24,6 +25,7 @@ export class ContactComponent implements OnInit {
         Direccion: ['', Validators.required],
         Telefono: ['', [Validators.required, Validators.pattern("/d")]],
         CURP: ['', [Validators.required, Validators.maxLength(18), Validators.pattern("A-Za-z/d")]],
+        campoBusqueda: ['', Validators.required]
       });
     }
 
@@ -33,21 +35,31 @@ export class ContactComponent implements OnInit {
 
     resetModel(){
       this.forma.get("FechaRegistro")?.setValue("");
-      this.forma.get("Id")?.setValue(0);
+      this.forma.get("Id")?.setValue("");
       this.forma.get("Nombre")?.setValue("");
       this.forma.get("Direccion")?.setValue("");
       this.forma.get("CURP")?.setValue("");
       this.forma.get("Telefono")?.setValue("");
     }
 
+    changeCriteria(criteria:any){
+      this.criterioBusqueda= '' + criteria;
+      console.log(this.criterioBusqueda);
+      this.resetModel();
+    }
+
+    //Metodos CRUD
+
     getContacts(){
+      this.busqueda=false;
+      this.resetModel();
       this._contactService.getListContacts().subscribe(
         (data) => {
           console.log(data);
           this.listaContacts = data;
         },
         (error) => {
-          console.log("No se ha podido obetenr los datos mi compa");
+          console.log("No se ha podido obetenr los datos");
         }
       );
     }
@@ -110,8 +122,8 @@ export class ContactComponent implements OnInit {
     }
 
     deleteContact(){
-
-      this._contactService.deleteContact(this.forma.get("Id")?.value).subscribe(
+      let id = this.forma.get("Id")?.value;
+      this._contactService.deleteContact(id).subscribe(
         (data)=> {
 
           console.log("contacto eliminado correctamente");
@@ -123,5 +135,83 @@ export class ContactComponent implements OnInit {
         }
       );
       this.resetModel();
+    }
+
+    //Metodos de Busqueda
+    search(){
+      let campoBusqueda = this.forma.get("campoBusqueda")?.value;
+
+      switch(this.criterioBusqueda){
+        case 'Id' :{
+          this._contactService.searchById(campoBusqueda).subscribe(
+            (data) => {
+              console.log(data);
+              this.listaContacts = data;
+              this.busqueda=true;
+            },
+            (error) =>{
+              console.log("No se ha podido obetenr los datos");
+            }
+          );
+          break;
+        }
+        case 'Nombre' :{
+          this._contactService.searchByNombre(campoBusqueda).subscribe(
+            (data) => {
+              console.log(data);
+              this.listaContacts = data;
+              this.busqueda=true;
+            },
+            (error) =>{
+              console.log("No se ha podido obetenr los datos");
+            }
+          );
+          break;
+        }
+        case 'Teléfono' :{
+          this._contactService.searchByTelefono(campoBusqueda).subscribe(
+            (data) => {
+              console.log(data);
+              this.listaContacts = data;
+              this.busqueda=true;
+            },
+            (error) =>{
+              console.log("No se ha podido obetenr los datos");
+            }
+          );
+          break;
+        }
+        case 'Dirección' :{
+          this._contactService.searchByDireccion(campoBusqueda).subscribe(
+            (data) => {
+              console.log(data);
+              this.listaContacts = data;
+              this.busqueda=true;
+            },
+            (error) =>{
+              console.log("No se ha podido obetenr los datos");
+            }
+          );
+          break;
+        }
+        case 'CURP' :{
+          this._contactService.searchByCURP(campoBusqueda).subscribe(
+            (data) => {
+              console.log(data);
+              this.listaContacts = data;
+              this.busqueda=true;
+            },
+            (error) =>{
+              console.log("No se ha podido obetenr los datos");
+            }
+          );
+          break;
+        }
+      }
+
+
+
+      
+      
     }
 }
