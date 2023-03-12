@@ -1,9 +1,11 @@
-<div id="TableContacts" style="margin-left: 3%; margin-top: 2%; margin-right: 23%;">
-    <h2 style="margin-bottom: 2%;">ContactsApp</h2>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" ><h2 style="margin-bottom: 2%;">ContactsApp</h2></a>
+  </div>
+</nav>
+<div id="TableContacts" style="margin-left: 3%; margin-top: 2%; margin-right: 23%;  ">
     <form [formGroup]="forma">
     <div class="row">
-
-        
             <div class="col-2">
                 <button class="btn btn-secondary" *ngIf="busqueda==true" (click)="getContacts()">
                     <i class="fa-solid fa-arrow-left"></i> 
@@ -11,12 +13,18 @@
                 </button>
             </div>
 
-            <div class="col-1 rounded" style="margin-left: 5%; background-color: gray; height: 36px; text-align: center; color: white; width: 170px; font-weight: bold; padding-top: 5px;">
+            <div class="col-1 rounded" style="margin-left: 0%; background-color: gray; height: 36px; text-align: center; color: white; width: 170px; font-weight: bold; padding-top: 5px;">
                 <label>{{criterioBusqueda}}:</label>
             </div>
             
-            <div class="col-3" >
+            <div class="col-3" *ngIf="criterioBusqueda!='Fecha de Registro'">
                 <input style="width: 370px" type="text" formControlName="campoBusqueda" class="form-control" id="Buscar" placeholder="Ingrese el valor">
+            </div>
+
+            <div class="col-3" *ngIf="criterioBusqueda=='Fecha de Registro'">
+              <div class="input-group date fj-date">
+                <input type="date" class="form-control" formControlName="campoBusqueda"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+              </div>
             </div>
             
             <div class="col-1" >
@@ -53,7 +61,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-1">
+            <div class="col-1" style="margin-left: 6%;">
                 <!-- <label for="formFile" class="form-label"></label> -->
                 <input class="custom-file-input" type="file" name="file" id="inputGroupFile" (change)="onFileChange($event)" multiple="true" accept=".csv">
             </div>
@@ -85,7 +93,7 @@
           <th>{{ contact.direccion }}</th>
           <th>{{ contact.telefono }}</th>
           <th>{{ contact.curp }}</th>
-          <th>{{ contact.fechaRegistro }}</th>
+          <th>{{ contact.fechaRegistro.substring(0,10) }}</th>
           <th>
             <i data-bs-target="#myModal" data-bs-toggle="modal"
               style="cursor: pointer"
@@ -153,7 +161,7 @@
 
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Save</button>
+            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Guardar</button>
           </div>
         </form>
       </div>
@@ -181,9 +189,13 @@
             <label for="recipient-name" class="col-form-label">CURP:</label>
             <input formControlName="CURP" type="text" class="form-control" id="CURP"  placeholder="">
 
-            <label for="recipient-name" class="col-form-label">Fecha de Registro:</label>
-            <i class="fa fa-calendar"></i>
-            <input formControlName="FechaRegistro" type="text" class="form-control" id="FechaRegistro"  placeholder="">
+            <!-- <div class="col-3">
+              <div class="input-group date fj-date">
+                <label for="recipient-name" class="col-form-label">Fecha de Registro:</label>
+                <input type="date" class="form-control" formControlName="FechaRegistro"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+              </div>
+            </div>
+            <input formControlName="FechaRegistro" type="date" class="form-control" id="FechaRegistro"  placeholder=""> -->
                   
           </div>
           <div class="modal-footer">
@@ -218,5 +230,5 @@
 
 </div>
 <script>
-
+  
 </script>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ContactService } from 'src/app/services/contact.service';
 import { read, utils } from 'xlsx';
+import  Swal  from 'sweetalert2';
 
 @Component({
   selector: 'app-contact',
@@ -26,10 +27,9 @@ export class ContactComponent implements OnInit {
         FechaRegistro: ['', Validators.required],
         Nombre: ['', Validators.required],
         Direccion: ['', Validators.required],
-        Telefono: ['', [Validators.required, Validators.pattern("/d")]],
-        CURP: ['', [Validators.required, Validators.maxLength(18), Validators.pattern("A-Za-z/d")]],
-        campoBusqueda: ['', Validators.required],
-        file: ['']
+        Telefono: ['', [Validators.required]],
+        CURP: ['', [Validators.required, Validators.maxLength(18)]],
+        campoBusqueda: ['', Validators.required]
       });
     }
 
@@ -66,7 +66,6 @@ export class ContactComponent implements OnInit {
           }
         }
         reader.readAsArrayBuffer(file);
-        
       }
       // const targ : DataTransfer = <DataTransfer> (evt.target);
       // console.log(targ);
@@ -130,6 +129,7 @@ export class ContactComponent implements OnInit {
     nextPage(){
       this.page++;
     }
+
     //Importar CSV
     importCSV(importData:any){
       this._contactService.importCSV(importData).subscribe(
@@ -144,10 +144,31 @@ export class ContactComponent implements OnInit {
     }
 
     //Metodos CRUD
-
     getContacts(){
+      let timerInterval: any = '';
+      Swal.fire({
+        title: 'Bienvenido!',
+        html: 'Cargando datos',
+        timer: 700,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading()
+          
+        },
+        willClose: () => {
+          clearInterval(timerInterval)
+        }
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          console.log('I was closed by the timer')
+        }
+      });
+
       this.busqueda=false;
+      
       this.resetModel();
+      
       this._contactService.getListContacts().subscribe(
         (data) => {
           console.log(data);
@@ -204,12 +225,22 @@ export class ContactComponent implements OnInit {
   
       this._contactService.updateContact(contact).subscribe(
         (data) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Done',
+            text: 'Contacto actualizado!'
+          })
           console.log(data);
           // console.log(data.Data.msg);
           this.getContacts();
           //this.toastr.success(data.Data.msg, 'Privilege edited');
         },
         (error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo actualizar el contacto'
+          })
           console.log(error);
           this.getContacts();
          // this.toastr.error(error, 'Privilege not edited');
@@ -221,11 +252,20 @@ export class ContactComponent implements OnInit {
       let id = this.forma.get("Id")?.value;
       this._contactService.deleteContact(id).subscribe(
         (data)=> {
-
+          Swal.fire({
+            icon: 'success',
+            title: 'Done',
+            text: 'Contacto borrado exitosamente!'
+          })
           console.log("contacto eliminado correctamente");
           this.getContacts();
         },
         (error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo borrar el contacto!'
+          })
           console.log(error);
           this.getContacts();
         }
@@ -308,11 +348,27 @@ export class ContactComponent implements OnInit {
           );
           break;
         }
+        case 'Fecha de Registro' :{
+          console.log(this.forma.get("campoBusqueda")?.value)
+          this._contactService.searchByFechaRegistro(campoBusqueda).subscribe(
+            (data) => {
+              console.log(data);
+              let lista = data;
+              this.separatePages(lista);
+              this.busqueda=true;
+            },
+            (error) =>{
+              console.log("No se ha podido obetenr los datos");
+            }
+          );
+          break;
+        }
       }
-
-
-
-      
-      
     }
+
+    //Validaciones
+    // Validaciones
+     
 }
+
+
