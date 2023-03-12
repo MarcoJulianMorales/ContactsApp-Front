@@ -61,17 +61,17 @@
                     </ul>
                 </div>
             </div>
+            
             <div class="col-1" style="margin-left: 6%;">
                 <!-- <label for="formFile" class="form-label"></label> -->
                 <input class="custom-file-input" type="file" name="file" id="inputGroupFile" (change)="onFileChange($event)" multiple="true" accept=".csv">
             </div>
 
             <div class="col-1" style="margin-left: 7%; margin-bottom: 1%;">
-                <button (click)="resetModel()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newModal">
+                <button (click)="resetModel()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
                   Nuevo
                 </button>
              </div>
-        
     </div>
     </form>
 
@@ -113,7 +113,6 @@
   </table>
 
   <div class="row">
-    
     <div class="col-1" style="margin-left: 40%;">
       <div class="container">
         <ul class="pagination">
@@ -137,69 +136,44 @@
     </div>
   </div>
 
-  <div class="modal fade" id=newModal data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered modal-md" >
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-tittle">New Contact</h5>
-          <button class="btn btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <form [formGroup]="forma" (ngSubmit)="addContact()">
-          <div class="modal-body">
-
-            <label for="recipient-name" class="col-form-label">Nombre:</label>
-            <input formControlName="Nombre" type="text" class="form-control" id="Nombre" placeholder="Ingrese el nombre">
-
-            <label for="recipient-name" class="col-form-label">Direccion:</label>
-            <input formControlName="Direccion" type="text" class="form-control" id="Direccion" placeholder="Ingrese la Direccion">
-
-            <label for="recipient-name" class="col-form-label">Telefono:</label>
-            <input formControlName="Telefono" type="text" class="form-control" id="Telefono" placeholder="Ingrese el teléfono">
-
-            <label for="recipient-name" class="col-form-label">CURP:</label>
-            <input formControlName="CURP" type="text" class="form-control" id="CURP" placeholder="Ingrese los 18 caracteres">
-
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-success" data-bs-dismiss="modal" [disabled]="forma.invalid">Guardar</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
   <div class="modal fade" id=myModal data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-md">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-tittle">Edit Contact</h5>
+          <h5 class="modal-tittle">{{guardar}} Contact</h5>
           <button class="btn btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <form [formGroup]="forma" (ngSubmit)="updateContact()">
+        <form [formGroup]="forma" >
           <div class="modal-body">
-            <label for="recipient-name" class="col-form-label">Nombre:</label>
-            <input formControlName="Nombre" type="text" class="form-control" id="Nombre"  placeholder="">
-
-            <label for="recipient-name" class="col-form-label">Direccion:</label>
-            <input formControlName="Direccion" type="text" class="form-control" id="Direccion"  placeholder="">
-
-            <label for="recipient-name" class="col-form-label">Telefono:</label>
-            <input formControlName="Telefono" type="text" class="form-control" id="Telefono"  placeholder="">
-
-            <label for="recipient-name" class="col-form-label">CURP:</label>
-            <input formControlName="CURP" type="text" class="form-control" id="CURP"  placeholder="">
-
-            <!-- <div class="col-3">
-              <div class="input-group date fj-date">
-                <label for="recipient-name" class="col-form-label">Fecha de Registro:</label>
-                <input type="date" class="form-control" formControlName="FechaRegistro"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-              </div>
+            <div class="row">
+              <label for="recipient-name" class="col-form-label">Nombre:</label>
+              <input formControlName="Nombre" type="text" class="form-control" id="Nombre"  placeholder="">
+              <small *ngIf="NombreInValid()" class="text-danger">El campo es requerido.</small>
             </div>
-            <input formControlName="FechaRegistro" type="date" class="form-control" id="FechaRegistro"  placeholder=""> -->
-                  
+            
+            <div class="row">
+              <label for="recipient-name" class="col-form-label">Direccion:</label>
+              <input formControlName="Direccion" type="text" class="form-control" id="Direccion"  placeholder="">
+              <small *ngIf="DireccionInValid()" class="text-danger">El campo es requerido.</small>
+            </div>
+            
+
+            <div class="row">
+              <label for="recipient-name" class="col-form-label">Telefono:</label>
+              <input formControlName="Telefono" type="text" class="form-control" id="Telefono"  placeholder="">
+              <small *ngIf="TelefonoInValid()" class="text-danger">El telefono debe estar formado por 7 a 15 dígitos.</small>
+            </div>
+            
+            <div class="row">
+              <label for="recipient-name" class="col-form-label">CURP:</label>
+              <input formControlName="CURP" type="text" class="form-control" id="CURP"  placeholder="">
+              <small *ngIf="CURPInValid()" class="text-danger">La Curp debe estar conformada por 18 caracteres.</small>
+            </div>
+            
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-success" data-bs-dismiss="modal" [disabled]="forma.invalid">Guardar</button>
+            <button *ngIf="guardar=='Update'" (click)="updateContact()" type="submit" class="btn btn-success" data-bs-dismiss="modal" [disabled]="forma.invalid">Actualizar</button>
+            <button *ngIf="guardar=='Add'" (click)="addContact()" type="submit" class="btn btn-success" data-bs-dismiss="modal" [disabled]="forma.invalid">Agregar</button>
           </div>
         </form>
       </div>
@@ -217,7 +191,7 @@
           <div class="modal-body">
             <form [formGroup]="forma">
                 <label for="recipient-name" class="col-form-label">Nombre:</label>
-                <input formControlName="Nombre" type="text" class="form-control" id="Nombre"  placeholder="">
+                <input formControlName="Nombre" type="text" class="form-control" id="Nombre" [disabled]="true" placeholder="">
             </form>
           </div>
           <div class="modal-footer">
@@ -240,5 +214,7 @@
 </pre>
 
 <script>
-  
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
 </script>

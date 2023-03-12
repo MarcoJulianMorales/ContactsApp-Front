@@ -16,19 +16,19 @@ export class ContactComponent implements OnInit {
   criterioBusqueda: string= 'Id';
   pages: any [] = [];
   page: any = '1';
+  guardar = '';
   
   constructor(
     private fb: FormBuilder,
-    private _contactService: ContactService,
-    //private toastr: ToastrService
+    private _contactService: ContactService
     ){
       this.forma = this.fb.group({
         Id: [''],
         FechaRegistro: ['',],
-        Nombre: ['', Validators.required],
+        Nombre: ['', Validators.required,],
         Direccion: ['', Validators.required],
-        Telefono: ['', [Validators.required]],
-        CURP: ['', [Validators.required, Validators.maxLength(18)]],
+        Telefono: ['', [Validators.required, Validators.pattern("[0-9]+"), Validators.minLength(7), Validators.maxLength(15)]],
+        CURP: ['', [Validators.required, Validators.maxLength(18), Validators.minLength(18), Validators.pattern("[A-Z 0-9]+")]],
         campoBusqueda: ['', ]
       });
     }
@@ -56,52 +56,15 @@ export class ContactComponent implements OnInit {
       this.getContacts();
     }
 
-    onFileChange(event:any){
-      const files = event.target.files;
-      if(files.length){
-        const file = files[0];
-        const reader = new FileReader();
-        reader.onload = (event:any)=>{
-          const wb = read(event.target.result);
-
-          const sheets = wb.SheetNames;
-
-          if(sheets.length){
-            const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
-            let importData: any [] = [];
-            importData=rows;
-            if(importData){
-
-              importData.forEach(dat => {
-                console.log("data a importar: ",dat)
-                  this.forma.get("Nombre")?.setValue(dat.Nombre);
-                  this.forma.get("Direccion")?.setValue(dat.Direccion);
-                  this.forma.get("CURP")?.setValue(dat.CURP);
-                  this.forma.get("Telefono")?.setValue(dat.Telefono);
-                  this.addContact();
-                }
-              )
-            }
-          }
-        }
-        reader.readAsArrayBuffer(file);
-      }
-      // const targ : DataTransfer = <DataTransfer> (evt.target);
-      // console.log(targ);
-
-      // const reader: FileReader = new FileReader();
-      // console.log(reader.readAsArrayBuffer(targ.files[0]));
-
-    }
-
     //FrontEnd Interactive Methods
     resetModel(){
+      this.guardar='Add';
       this.forma.get("FechaRegistro")?.setValue("");
       this.forma.get("Id")?.setValue("");
       this.forma.get("Nombre")?.setValue("");
       this.forma.get("Direccion")?.setValue("");
       this.forma.get("CURP")?.setValue("");
-      this.forma.get("Telefono")?.setValue("");
+      this.forma.get("Telefono")?.setValue(0);
       this.forma.get("campoBusqueda")?.setValue("");
     }
 
@@ -178,6 +141,38 @@ export class ContactComponent implements OnInit {
       )
     }
 
+    onFileChange(event:any){
+      const files = event.target.files;
+      if(files.length){
+        const file = files[0];
+        const reader = new FileReader();
+        reader.onload = (event:any)=>{
+          const wb = read(event.target.result);
+
+          const sheets = wb.SheetNames;
+
+          if(sheets.length){
+            const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
+            let importData: any [] = [];
+            importData=rows;
+            if(importData){
+
+              importData.forEach(dat => {
+                console.log("data a importar: ",dat)
+                  this.forma.get("Nombre")?.setValue(dat.Nombre);
+                  this.forma.get("Direccion")?.setValue(dat.Direccion);
+                  this.forma.get("CURP")?.setValue(dat.CURP);
+                  this.forma.get("Telefono")?.setValue(dat.Telefono);
+                  this.addContact();
+                }
+              )
+            }
+          }
+        }
+        reader.readAsArrayBuffer(file);
+      }
+    }
+
     //Metodos CRUD
     getContacts(){
       this.busqueda=false;
@@ -194,6 +189,16 @@ export class ContactComponent implements OnInit {
           console.log("No se ha podido obetenr los datos");
         }
       );
+    }
+
+    getContact(contact:any){
+      this.guardar='Update';
+      this.forma.get("Id")?.setValue(contact.id);
+      this.forma.get("Nombre")?.setValue(contact.nombre);
+      this.forma.get("Direccion")?.setValue(contact.direccion);
+      this.forma.get("Telefono")?.setValue(contact.telefono);
+      this.forma.get("CURP")?.setValue(contact.curp);
+      this.forma.get("FechaRegistro")?.setValue(contact.fechaRegistro);
     }
 
     addContact(){
@@ -213,7 +218,6 @@ export class ContactComponent implements OnInit {
             title: 'Ok',
             text: 'Contacto agregado exitosamente!'
           })
-          console.log(data);
           this.getContacts();
         },
         (error) => {
@@ -227,15 +231,6 @@ export class ContactComponent implements OnInit {
         });
     }
 
-    getContact(contact:any){
-      this.forma.get("Id")?.setValue(contact.id);
-      this.forma.get("Nombre")?.setValue(contact.nombre);
-      this.forma.get("Direccion")?.setValue(contact.direccion);
-      this.forma.get("Telefono")?.setValue(contact.telefono);
-      this.forma.get("CURP")?.setValue(contact.curp);
-      this.forma.get("FechaRegistro")?.setValue(contact.fechaRegistro);
-    }
-   
     updateContact(){
       this.validateForm();
       const contact : any = {
@@ -251,18 +246,17 @@ export class ContactComponent implements OnInit {
         (data) => {
           Swal.fire({
             icon: 'success',
-            title: 'Done',
+            title: 'Ok',
             text: 'Contacto actualizado!'
           })
-          console.log(data);
           this.getContacts();
         },
         (error) => {
-          // Swal.fire({
-          //   icon: 'error',
-          //   title: 'Error',
-          //   text: 'No se pudo actualizar el contacto'
-          // })
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo actualizar el contacto!'
+          })
           console.log(error);
           this.getContacts();
         });
@@ -388,8 +382,19 @@ export class ContactComponent implements OnInit {
     }
 
     //Validaciones
-    // Validaciones
-     
+    CURPInValid() {
+      return this.forma.get("CURP")?.invalid && this.forma.get("CURP")?.touched; 
+    }
+
+    TelefonoInValid() {
+      return this.forma.get("Telefono")?.invalid && this.forma.get("Telefono")?.touched; 
+    }
+
+    NombreInValid() {
+      return this.forma.get("Nombre")?.invalid && this.forma.get("Nombre")?.touched; 
+    }
+    
+    DireccionInValid() {
+      return this.forma.get("Direccion")?.invalid && this.forma.get("Direccion")?.touched; 
+    }
 }
-
-
