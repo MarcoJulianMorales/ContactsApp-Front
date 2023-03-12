@@ -50,7 +50,7 @@ export class ContactComponent implements OnInit {
       }).then((result) => {
         /* Read more about handling dismissals below */
         if (result.dismiss === Swal.DismissReason.timer) {
-          console.log('I was closed by the timer')
+          // console.log('I was closed by the timer')
         }
       });
       this.getContacts();
@@ -64,29 +64,13 @@ export class ContactComponent implements OnInit {
       this.forma.get("Nombre")?.setValue("");
       this.forma.get("Direccion")?.setValue("");
       this.forma.get("CURP")?.setValue("");
-      this.forma.get("Telefono")?.setValue(0);
+      this.forma.get("Telefono")?.setValue(null);
       this.forma.get("campoBusqueda")?.setValue("");
-    }
-
-    validateForm(): boolean{
-      if (this.forma.invalid) {
-        Object.values(this.forma.controls).forEach(control => {
-          control.markAsTouched();
-        });
-        // Swal.fire({
-        //   title: 'Error!',
-        //   text: 'Uno o más campos son incorrectos',
-        //   icon: 'warning',
-        //   confirmButtonText: 'Aceptar'
-        // });
-        return false;
-      }
-      return true;
     }
 
     changeCriteria(criteria:any){
       this.criterioBusqueda= '' + criteria;
-      console.log(this.criterioBusqueda);
+      // console.log(this.criterioBusqueda);
       this.resetModel();
     }
 
@@ -112,8 +96,8 @@ export class ContactComponent implements OnInit {
           this.pages.push(page);
         }
       }
-      console.log('num de paginas: ', this.pages);
-      console.log('listas', this.listaContacts, 'tamaño: ', this.listaContacts.length);
+      // console.log('num de paginas: ', this.pages);
+      // console.log('listas', this.listaContacts, 'tamaño: ', this.listaContacts.length);
     }
 
     changePage(page: any){
@@ -132,11 +116,21 @@ export class ContactComponent implements OnInit {
     importCSV(importData:any){
       this._contactService.importCSV(importData).subscribe(
         (data) =>{
-          console.log("Se importo el archivo correctamente.");
+          // console.log("Se importo el archivo correctamente.");
+          Swal.fire({
+            icon: 'success',
+            title: 'Ok',
+            text: 'Archivo importado exitosamente!'
+          })
           this.getContacts();
         },
         (error) =>{
-          console.log("no se ha podido importar el archivo");
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se ha podido importar el archivo!'
+          })
+          // console.log("no se ha podido importar el archivo");
         }
       )
     }
@@ -156,13 +150,13 @@ export class ContactComponent implements OnInit {
             let importData: any [] = [];
             importData=rows;
             if(importData){
-
+                // console.log(importData)
               importData.forEach(dat => {
-                console.log("data a importar: ",dat)
+                // console.log("data a importar: ",dat)
                   this.forma.get("Nombre")?.setValue(dat.Nombre);
                   this.forma.get("Direccion")?.setValue(dat.Direccion);
                   this.forma.get("CURP")?.setValue(dat.CURP);
-                  this.forma.get("Telefono")?.setValue(dat.Telefono);
+                  this.forma.get("Telefono")?.setValue(''+dat.Telefono);
                   this.addContact();
                 }
               )
@@ -181,12 +175,12 @@ export class ContactComponent implements OnInit {
       
       this._contactService.getListContacts().subscribe(
         (data) => {
-          console.log(data);
+          // console.log(data);
           let lista = data;
           this.separatePages(lista);
         },
         (error) => {
-          console.log("No se ha podido obetenr los datos");
+          // console.log("No se ha podido obetenr los datos");
         }
       );
     }
@@ -202,21 +196,20 @@ export class ContactComponent implements OnInit {
     }
 
     addContact(){
-      this.validateForm();
         const contact : any = {
         Nombre: this.forma.get("Nombre")?.value,
         Direccion: this.forma.get("Direccion")?.value,
         Telefono: this.forma.get("Telefono")?.value,
         CURP: this.forma.get("CURP")?.value
       };
-      console.log("Contact data:", contact);
+      // console.log("Contact data:", contact);
   
       this._contactService.newContact(contact).subscribe(
         (data) => {
           Swal.fire({
             icon: 'success',
             title: 'Ok',
-            text: 'Contacto agregado exitosamente!'
+            text: 'Agregado exitosamente!'
           })
           this.getContacts();
         },
@@ -224,15 +217,14 @@ export class ContactComponent implements OnInit {
           Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'No se pudo agregar el contacto!'
+            text: 'No se pudo subir la información!'
           })
-          console.log(error);
+          // console.log(error);
           this.getContacts();
         });
     }
 
     updateContact(){
-      this.validateForm();
       const contact : any = {
         Id: this.forma.get("Id")?.value,
         Nombre: this.forma.get("Nombre")?.value,
@@ -255,9 +247,9 @@ export class ContactComponent implements OnInit {
           Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'No se pudo actualizar el contacto!'
+            text: 'No se pudo actualizar la información!'
           })
-          console.log(error);
+          // console.log(error);
           this.getContacts();
         });
         this.resetModel();
@@ -270,9 +262,9 @@ export class ContactComponent implements OnInit {
           Swal.fire({
             icon: 'success',
             title: 'Done',
-            text: 'Contacto borrado exitosamente!'
+            text: 'Boorado exitosamente!'
           })
-          console.log("contacto eliminado correctamente");
+          // console.log("contacto eliminado correctamente");
           this.getContacts();
         },
         (error) => {
@@ -281,7 +273,7 @@ export class ContactComponent implements OnInit {
             title: 'Error',
             text: 'No se pudo borrar el contacto!'
           })
-          console.log(error);
+          // console.log(error);
           this.getContacts();
         }
       );
@@ -296,13 +288,13 @@ export class ContactComponent implements OnInit {
         case 'Id' :{
           this._contactService.searchById(campoBusqueda).subscribe(
             (data) => {
-              console.log(data);
+              // console.log(data);
               let lista = data;
               this.separatePages(lista);
               this.busqueda=true;
             },
             (error) =>{
-              console.log("No se ha podido obetenr los datos");
+              // console.log("No se ha podido obetenr los datos");
             }
           );
           break;
@@ -310,13 +302,13 @@ export class ContactComponent implements OnInit {
         case 'Nombre' :{
           this._contactService.searchByNombre(campoBusqueda).subscribe(
             (data) => {
-              console.log(data);
+              // console.log(data);
               let lista = data;
               this.separatePages(lista);
               this.busqueda=true;
             },
             (error) =>{
-              console.log("No se ha podido obetenr los datos");
+              // console.log("No se ha podido obetenr los datos");
             }
           );
           break;
@@ -324,13 +316,13 @@ export class ContactComponent implements OnInit {
         case 'Teléfono' :{
           this._contactService.searchByTelefono(campoBusqueda).subscribe(
             (data) => {
-              console.log(data);
+              // console.log(data);
               let lista = data;
               this.separatePages(lista);
               this.busqueda=true;
             },
             (error) =>{
-              console.log("No se ha podido obetenr los datos");
+              // console.log("No se ha podido obetenr los datos");
             }
           );
           break;
@@ -338,13 +330,13 @@ export class ContactComponent implements OnInit {
         case 'Dirección' :{
           this._contactService.searchByDireccion(campoBusqueda).subscribe(
             (data) => {
-              console.log(data);
+              // console.log(data);
               let lista = data;
               this.separatePages(lista);
               this.busqueda=true;
             },
             (error) =>{
-              console.log("No se ha podido obetenr los datos");
+              // console.log("No se ha podido obetenr los datos");
             }
           );
           break;
@@ -352,28 +344,28 @@ export class ContactComponent implements OnInit {
         case 'CURP' :{
           this._contactService.searchByCURP(campoBusqueda).subscribe(
             (data) => {
-              console.log(data);
+              // console.log(data);
               let lista = data;
               this.separatePages(lista);
               this.busqueda=true;
             },
             (error) =>{
-              console.log("No se ha podido obetenr los datos");
+              // console.log("No se ha podido obetenr los datos");
             }
           );
           break;
         }
         case 'Fecha de Registro' :{
-          console.log(this.forma.get("campoBusqueda")?.value)
+          // console.log(this.forma.get("campoBusqueda")?.value)
           this._contactService.searchByFechaRegistro(campoBusqueda).subscribe(
             (data) => {
-              console.log(data);
+              // console.log(data);
               let lista = data;
               this.separatePages(lista);
               this.busqueda=true;
             },
             (error) =>{
-              console.log("No se ha podido obetenr los datos");
+              // console.log("No se ha podido obetenr los datos");
             }
           );
           break;
