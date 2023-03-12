@@ -145,25 +145,25 @@ export class ContactComponent implements OnInit {
 
     //Metodos CRUD
     getContacts(){
-      let timerInterval: any = '';
-      Swal.fire({
-        title: 'Bienvenido!',
-        html: 'Cargando datos',
-        timer: 700,
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading()
+      // let timerInterval: any = '';
+      // Swal.fire({
+      //   title: 'Bienvenido!',
+      //   html: 'Cargando datos',
+      //   timer: 700,
+      //   timerProgressBar: true,
+      //   didOpen: () => {
+      //     Swal.showLoading()
           
-        },
-        willClose: () => {
-          clearInterval(timerInterval)
-        }
-      }).then((result) => {
-        /* Read more about handling dismissals below */
-        if (result.dismiss === Swal.DismissReason.timer) {
-          console.log('I was closed by the timer')
-        }
-      });
+      //   },
+      //   willClose: () => {
+      //     clearInterval(timerInterval)
+      //   }
+      // }).then((result) => {
+      //   /* Read more about handling dismissals below */
+      //   if (result.dismiss === Swal.DismissReason.timer) {
+      //     console.log('I was closed by the timer')
+      //   }
+      // });
 
       this.busqueda=false;
       
@@ -192,15 +192,22 @@ export class ContactComponent implements OnInit {
   
       this._contactService.newContact(contact).subscribe(
         (data) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Ok',
+            text: 'Contacto agregado exitosamente!'
+          })
           console.log(data);
-          // console.log(data.Data.msg);
           this.getContacts();
-         // this.toastr.success(data.Data.msg, 'Privilege Added!');
         },
         (error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo agregar el contacto!'
+          })
           console.log(error);
           this.getContacts();
-          //this.toastr.error(error, 'Privilege not added');
         });
     }
 
@@ -231,9 +238,7 @@ export class ContactComponent implements OnInit {
             text: 'Contacto actualizado!'
           })
           console.log(data);
-          // console.log(data.Data.msg);
           this.getContacts();
-          //this.toastr.success(data.Data.msg, 'Privilege edited');
         },
         (error) => {
           Swal.fire({
@@ -243,7 +248,6 @@ export class ContactComponent implements OnInit {
           })
           console.log(error);
           this.getContacts();
-         // this.toastr.error(error, 'Privilege not edited');
         });
         this.resetModel();
     }
