@@ -137,11 +137,11 @@
     </div>
   </div>
 
-  <div class="modal fade" id=newModal>
-    <div class="modal-dialog modal-dialog-centered modal-md">
+  <div class="modal fade" id=newModal data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-md" >
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-tittle">New Privilege</h5>
+          <h5 class="modal-tittle">New Contact</h5>
           <button class="btn btn-close" data-bs-dismiss="modal"></button>
         </div>
         <form [formGroup]="forma" (ngSubmit)="addContact()">
@@ -161,14 +161,14 @@
 
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Guardar</button>
+            <button type="submit" class="btn btn-success" data-bs-dismiss="modal" [disabled]="forma.invalid">Guardar</button>
           </div>
         </form>
       </div>
     </div>
   </div>
 
-  <div class="modal fade" id=myModal>
+  <div class="modal fade" id=myModal data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-md">
       <div class="modal-content">
         <div class="modal-header">
@@ -199,7 +199,7 @@
                   
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Save</button>
+            <button type="submit" class="btn btn-success" data-bs-dismiss="modal" [disabled]="forma.invalid">Guardar</button>
           </div>
         </form>
       </div>
@@ -229,6 +229,16 @@
   </div>
 
 </div>
+
+<pre>
+  Estado del formulario: {{forma.valid}}
+ 
+  Status:{{forma.status}}
+</pre>
+<pre>
+  {{forma.value | json}}
+</pre>
+
 <script>
   
 </script>

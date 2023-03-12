@@ -24,16 +24,35 @@ export class ContactComponent implements OnInit {
     ){
       this.forma = this.fb.group({
         Id: [''],
-        FechaRegistro: ['', Validators.required],
+        FechaRegistro: ['',],
         Nombre: ['', Validators.required],
         Direccion: ['', Validators.required],
         Telefono: ['', [Validators.required]],
         CURP: ['', [Validators.required, Validators.maxLength(18)]],
-        campoBusqueda: ['', Validators.required]
+        campoBusqueda: ['', ]
       });
     }
 
     ngOnInit(): void {
+      let timerInterval: any = '';
+      Swal.fire({
+        title: 'Bienvenido!',
+        html: 'Cargando datos',
+        timer: 700,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading()
+          
+        },
+        willClose: () => {
+          clearInterval(timerInterval)
+        }
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          console.log('I was closed by the timer')
+        }
+      });
       this.getContacts();
     }
 
@@ -84,6 +103,22 @@ export class ContactComponent implements OnInit {
       this.forma.get("CURP")?.setValue("");
       this.forma.get("Telefono")?.setValue("");
       this.forma.get("campoBusqueda")?.setValue("");
+    }
+
+    validateForm(): boolean{
+      if (this.forma.invalid) {
+        Object.values(this.forma.controls).forEach(control => {
+          control.markAsTouched();
+        });
+        // Swal.fire({
+        //   title: 'Error!',
+        //   text: 'Uno o más campos son incorrectos',
+        //   icon: 'warning',
+        //   confirmButtonText: 'Aceptar'
+        // });
+        return false;
+      }
+      return true;
     }
 
     changeCriteria(criteria:any){
@@ -145,26 +180,6 @@ export class ContactComponent implements OnInit {
 
     //Metodos CRUD
     getContacts(){
-      // let timerInterval: any = '';
-      // Swal.fire({
-      //   title: 'Bienvenido!',
-      //   html: 'Cargando datos',
-      //   timer: 700,
-      //   timerProgressBar: true,
-      //   didOpen: () => {
-      //     Swal.showLoading()
-          
-      //   },
-      //   willClose: () => {
-      //     clearInterval(timerInterval)
-      //   }
-      // }).then((result) => {
-      //   /* Read more about handling dismissals below */
-      //   if (result.dismiss === Swal.DismissReason.timer) {
-      //     console.log('I was closed by the timer')
-      //   }
-      // });
-
       this.busqueda=false;
       
       this.resetModel();
@@ -182,7 +197,8 @@ export class ContactComponent implements OnInit {
     }
 
     addContact(){
-      const contact : any = {
+      this.validateForm();
+        const contact : any = {
         Nombre: this.forma.get("Nombre")?.value,
         Direccion: this.forma.get("Direccion")?.value,
         Telefono: this.forma.get("Telefono")?.value,
@@ -221,6 +237,7 @@ export class ContactComponent implements OnInit {
     }
    
     updateContact(){
+      this.validateForm();
       const contact : any = {
         Id: this.forma.get("Id")?.value,
         Nombre: this.forma.get("Nombre")?.value,
@@ -241,11 +258,11 @@ export class ContactComponent implements OnInit {
           this.getContacts();
         },
         (error) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se pudo actualizar el contacto'
-          })
+          // Swal.fire({
+          //   icon: 'error',
+          //   title: 'Error',
+          //   text: 'No se pudo actualizar el contacto'
+          // })
           console.log(error);
           this.getContacts();
         });
